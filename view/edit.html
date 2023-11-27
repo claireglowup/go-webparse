@@ -1,0 +1,60 @@
+<!-- @format -->
+
+{{define "edit"}} {{template "_header"}}
+<div class="container mt-5" style="width: 800px">
+  <h1>Edit Produk</h1>
+  <form>
+    <div class="mb-3">
+      <label for="produk" class="form-label">Nama Produk</label>
+      <input type="text" class="form-control" id="namaproduk" value="{{.NamaProduk}}" name="namaproduk" />
+    </div>
+    <div class="mb-3">
+      <label for="kategori" class="form-label">Kategori</label>
+      <input type="text" class="form-control" id="kategori" value="{{.NamaKategori}}" name="kategori" />
+    </div>
+    <label for="status" class="form-label">Status</label>
+    <select class="form-select" aria-label="Default select example" id="status" name="status">
+      <option value="bisa dijual" selected>Bisa dijual</option>
+      <option value="tidak bisa dijual">Tidak bisa dijual</option>
+    </select>
+    <div class="mb-3">
+      <label for="harga" class="form-label">Harga</label>
+      <input type="number" class="form-control" id="harga" value="{{.Harga}}" name="harga" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="button" class="btn btn-danger" onclick="window.location.href='/products'">Batal</button>
+  </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("form").submit(function (event) {
+      event.preventDefault();
+
+      var formData = {
+        namaproduk: $("#namaproduk").val(),
+        kategori: $("#kategori").val(),
+        status: $("#status").val(),
+        harga: $("#harga").val(),
+      };
+
+      $.ajax({
+        type: "PUT",
+        url: "/product/{{.IDProduk}}",
+        data: formData,
+        success: function (response) {
+          window.location.href = "/products";
+
+          alert("Data berhasil diupdate");
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
+    });
+  });
+</script>
+
+{{template "_footer"}} {{end}}

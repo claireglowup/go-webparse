@@ -1,0 +1,48 @@
+<!-- @format -->
+{{define "produk"}} {{template "_header"}}
+<div class="container d-flex flex-row flex-wrap">
+  {{range .}}
+
+  <div class="col-md-3">
+    <div class="card m-3 fixed-card">
+      <div class="card-body">
+        <h5 class="card-title">ID .{{.IDProduk}}</h5>
+        <h5 class="card-title">{{.NamaProduk}}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">{{.NamaKategori}}</h6>
+        <p class="card-text text-body-secondary">{{.NamaStatus}}</p>
+        <h5 class="card-subtitle mb-3">RP. {{.Harga}}</h5>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='/product/{{.IDProduk}}'">Edit</button>
+        <button type="button" class="btn btn-danger" onclick="hapusProduk('{{.IDProduk}}')">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  {{end}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  function hapusProduk(idProduk) {
+    // Konfirmasi pengguna sebelum menghapus
+    if (confirm("Anda yakin ingin menghapus produk ini?")) {
+      // Lakukan permintaan AJAX untuk menghapus produk
+      $.ajax({
+        type: "DELETE",
+        url: "/product/" + idProduk,
+        success: function (response) {
+          console.log("Produk berhasil dihapus:", response);
+
+          // Reload halaman setelah menghapus produk
+          window.location.reload();
+        },
+        error: function (error) {
+          console.error("Error:", error);
+          alert("Gagal menghapus produk.");
+        },
+      });
+    }
+  }
+</script>
+
+{{template "_footer"}} {{end}}
