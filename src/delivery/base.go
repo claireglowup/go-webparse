@@ -7,11 +7,13 @@ import (
 )
 
 type Delivery interface {
-	InsertProduct(c *gin.Context)
+	InsertProductMany(c *gin.Context)
+	InsertOneProduct(c *gin.Context)
 	GetAllProduct(c *gin.Context)
-	GetProduk(c *gin.Context)
+	GetProdukForUpdate(c *gin.Context)
 	UpdateProduct(c *gin.Context)
 	DeleteProduct(c *gin.Context)
+	LoadInsertView(c *gin.Context)
 }
 
 type delivery struct {

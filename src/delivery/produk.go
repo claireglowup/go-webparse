@@ -20,10 +20,10 @@ type responseDataAPI struct {
 	Data    []repository.InsertProductParamsTx `json:"data,omitempty"`
 }
 
-func (d *delivery) InsertProduct(c *gin.Context) {
+func (d *delivery) InsertProductMany(c *gin.Context) {
 
 	formData := url.Values{
-		"username": {"tesprogrammer281123C03"},           //berubah sewaktu waktu
+		"username": {"tesprogrammer281123C06"},           //berubah sewaktu waktu
 		"password": {"4fa37776381c62c7ef8f896d54efc8ca"}, // berubah sewaktu waktu
 	}
 
@@ -55,7 +55,7 @@ func (d *delivery) InsertProduct(c *gin.Context) {
 		return
 	}
 
-	err = d.usecase.InsertProductTx(c, responseData.Data)
+	err = d.usecase.InsertProductManyTx(c, responseData.Data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -63,6 +63,39 @@ func (d *delivery) InsertProduct(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
+	})
+
+}
+
+func (d *delivery) InsertOneProduct(c *gin.Context) {
+
+	id := c.Request.FormValue("idproduk")
+	namaProduk := c.Request.FormValue("namaproduk")
+	kategori := c.Request.FormValue("kategori")
+	status := c.Request.FormValue("status")
+	harga := c.Request.FormValue("harga")
+
+	arg := repository.InsertProductParamsTx{
+		IdProduk:   id,
+		NamaProduk: namaProduk,
+		Kategori:   kategori,
+		Status:     status,
+		Harga:      harga,
+	}
+
+	err := d.usecase.InsertOneProductTx(c, arg)
+	if err != nil {
+		if err.Error() == "pq: duplicate key value violates unique constraint \"produk_pkey\"" {
+			c.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"messsage": "data berhasil ditambah",
 	})
 
 }
@@ -93,7 +126,21 @@ func (d *delivery) GetAllProduct(c *gin.Context) {
 
 }
 
-func (d *delivery) GetProduk(c *gin.Context) {
+func (d *delivery) LoadInsertView(c *gin.Context) {
+	tmpl := template.Must(template.ParseFiles(
+		"././view/frame.html",
+		"././view/insert.html",
+	))
+
+	err := tmpl.ExecuteTemplate(c.Writer, "insert", nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+}
+
+func (d *delivery) GetProdukForUpdate(c *gin.Context) {
 
 	id := c.Param("id")
 

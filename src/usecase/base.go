@@ -6,7 +6,8 @@ import (
 )
 
 type Usecase interface {
-	InsertProductTx(ctx context.Context, arg []repository.InsertProductParamsTx) error
+	InsertProductManyTx(ctx context.Context, arg []repository.InsertProductParamsTx) error
+	InsertOneProductTx(ctx context.Context, arg repository.InsertProductParamsTx) error
 	GetAllProduct(ctx context.Context) ([]repository.GetAllProductRow, error)
 	GetProduct(ctx context.Context, idProduct string) (repository.GetProductRow, error)
 	GetProdukForUpdate(ctx context.Context, idProduct string) (repository.GetProductForUpdateRow, error)

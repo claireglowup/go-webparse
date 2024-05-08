@@ -8,7 +8,8 @@ import (
 
 type Store interface {
 	Querier
-	InsertProductTx(ctx context.Context, arg []InsertProductParamsTx) error
+	InsertProductManyTx(ctx context.Context, arg []InsertProductParamsTx) error
+	InsertOneProductTx(ctx context.Context, arg InsertProductParamsTx) error
 	UpdateProductTx(ctx context.Context, arg UpdateProductParamsTx) error
 }
 

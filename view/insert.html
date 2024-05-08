@@ -1,31 +1,40 @@
 <!-- @format -->
 
-{{define "edit"}} {{template "_header"}}
+{{define "insert"}} {{template "_header"}}
 <div class="container mt-5" style="width: 800px">
-  <h1>Edit Produk</h1>
+  <h1>Tambah Produk</h1>
   <form>
     <div class="mb-3">
-      <label for="namaproduk" class="form-label">Nama Produk</label>
-      <input type="text" class="form-control" id="namaproduk" value="{{.NamaProduk}}" name="namaproduk" />
+      <label for="idproduk" class="form-label">Id Produk</label>
+      <input type="number" class="form-control" id="idproduk" name="idproduk" />
     </div>
+
+    <div class="mb-3">
+      <label for="namaproduk" class="form-label">Nama Produk</label>
+      <input type="text" class="form-control" id="namaproduk" name="namaproduk" />
+    </div>
+
     <div class="mb-3">
       <label for="kategori" class="form-label">Kategori</label>
-      <input type="text" class="form-control" id="kategori" value="{{.NamaKategori}}" name="kategori" />
+      <input type="text" class="form-control" id="kategori" name="kategori" />
     </div>
+
     <label for="status" class="form-label">Status</label>
     <select class="form-select" aria-label="Default select example" id="status" name="status">
       <option value="bisa dijual" selected>Bisa dijual</option>
       <option value="tidak bisa dijual">Tidak bisa dijual</option>
     </select>
+
     <div class="mb-3">
       <label for="harga" class="form-label">Harga</label>
-      <input type="number" class="form-control" id="harga" value="{{.Harga}}" name="harga" />
+      <input type="number" class="form-control" id="harga" name="harga" />
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
     <button type="button" class="btn btn-danger" onclick="window.location.href='/products'">Batal</button>
   </form>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
@@ -34,6 +43,7 @@
       event.preventDefault();
 
       var formData = {
+        idproduk: $("#idproduk").val(),
         namaproduk: $("#namaproduk").val(),
         kategori: $("#kategori").val(),
         status: $("#status").val(),
@@ -41,16 +51,18 @@
       };
 
       $.ajax({
-        type: "PUT",
-        url: "/product/{{.IDProduk}}",
+        type: "POST",
+        url: "/product",
         data: formData,
         success: function (response) {
           window.location.href = "/products";
 
           alert("Data berhasil diupdate");
         },
-        error: function (error) {
-          console.error("Error:", error);
+        error: function (xhr, status, error) {
+          if (xhr.status == 400) {
+            alert("ID Produk sudah gigunakan");
+          }
         },
       });
     });

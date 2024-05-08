@@ -40,9 +40,12 @@ func (s *server) Start() {
 	repo := repository.NewStore(s.db)
 	usecase := usecase.NewUsecase(repo)
 	delivery := delivery.NewDelivery(usecase, s.linkAPI)
-	s.httpServer.POST("/products", delivery.InsertProduct)
+
+	s.httpServer.POST("/products", delivery.InsertProductMany)
+	s.httpServer.POST("/product", delivery.InsertOneProduct)
+	s.httpServer.GET("/addproduct", delivery.LoadInsertView)
 	s.httpServer.GET("/products", delivery.GetAllProduct)
-	s.httpServer.GET("/product/:id", delivery.GetProduk)
+	s.httpServer.GET("/product/:id", delivery.GetProdukForUpdate)
 	s.httpServer.PUT("/product/:id", delivery.UpdateProduct)
 	s.httpServer.DELETE("/product/:id", delivery.DeleteProduct)
 

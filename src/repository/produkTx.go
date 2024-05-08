@@ -67,7 +67,7 @@ func (s *sqlStore) UpdateProductTx(ctx context.Context, arg UpdateProductParamsT
 
 }
 
-func (s *sqlStore) InsertProductTx(ctx context.Context, arg []InsertProductParamsTx) error {
+func (s *sqlStore) InsertProductManyTx(ctx context.Context, arg []InsertProductParamsTx) error {
 
 	err := s.ExecTx(ctx, func(q *Queries) error {
 
@@ -117,6 +117,60 @@ func (s *sqlStore) InsertProductTx(ctx context.Context, arg []InsertProductParam
 				return err
 			}
 
+		}
+
+		return err
+
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return err
+
+}
+
+func (s *sqlStore) InsertOneProductTx(ctx context.Context, arg InsertProductParamsTx) error {
+
+	var err error
+
+	uuidKategori := uuid.New().String()
+	uuidStatus := uuid.New().String()
+
+	err = s.ExecTx(ctx, func(q *Queries) error {
+
+		argInsertProduct := InsertProductParams{
+			IDProduk:   arg.IdProduk,
+			NamaProduk: arg.NamaProduk,
+			Harga:      arg.Harga,
+			KategoriID: uuidKategori,
+			StatusID:   uuidStatus,
+		}
+
+		argInsertKategori := InsertKategoriParams{
+			IDKategori:   uuidKategori,
+			NamaKategori: arg.Kategori,
+		}
+
+		argInsertStatus := InsertStatusParams{
+			IDStatus:   uuidStatus,
+			NamaStatus: arg.Status,
+		}
+
+		_, err = q.InsertKategori(ctx, argInsertKategori)
+		if err != nil {
+			return err
+		}
+
+		_, err = q.InsertStatus(ctx, argInsertStatus)
+		if err != nil {
+			return err
+		}
+
+		_, err = q.InsertProduct(ctx, argInsertProduct)
+		if err != nil {
+			return err
 		}
 
 		return err

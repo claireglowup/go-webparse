@@ -5,15 +5,25 @@ import (
 	"testfastprint/src/repository"
 )
 
-func (u *usecase) InsertProductTx(ctx context.Context, arg []repository.InsertProductParamsTx) error {
+func (u *usecase) InsertProductManyTx(ctx context.Context, arg []repository.InsertProductParamsTx) error {
 
-	err := u.store.InsertProductTx(ctx, arg)
+	err := u.store.InsertProductManyTx(ctx, arg)
 	if err != nil {
 		return err
 	}
 
 	return nil
 
+}
+
+func (u *usecase) InsertOneProductTx(ctx context.Context, arg repository.InsertProductParamsTx) error {
+
+	err := u.store.InsertOneProductTx(ctx, arg)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *usecase) GetAllProduct(ctx context.Context) ([]repository.GetAllProductRow, error) {
